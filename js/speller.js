@@ -95,6 +95,36 @@ function check(inputWord) {
 			return traverseTree(currentNode, inputWord);
 		}
 
+		findBestOneLtrPath(currentNode = this.root, inputWord = this.root.word) {
+			let traverseTree = (currentNode, inputWord) => {
+				console.log('currentNode.children: ', currentNode.children);
+				let result = [];
+					// base case occurs at terminal node
+				if (currentNode.children[0] === null && currentNode.children[1] === null) {
+					// check solution, return path
+					if (currentNode.path.join('').toLowerCase() === inputWord) {
+						console.log('Success - currentNode.path: ', currentNode.path.join('').toLowerCase());
+						return currentNode.path;
+					} else {
+						// if no solution, return empty array
+						return [];
+					}
+					// if non-terminal node, then iterate over tree
+				} else {
+					for (let i = 1; i < currentNode.children.length; i--) {
+						if (currentNode.children[i] !== null) {
+							result = traverseTree(currentNode.children[i], inputWord);
+							if (result.join('').toLowerCase() === inputWord) {
+								break;
+							}
+						}
+					}
+				}
+				return result;
+			}
+			return traverseTree(currentNode, inputWord);
+		}
+
 		findSolution() {
 			//traverseTree to assemble word
 			let traverseTree = (currentNode) => {
@@ -157,6 +187,7 @@ function check(inputWord) {
 	console.log('inputWord: ', inputWord)
 	let resultTree = new Tree(inputWord);
 	console.log('resultTree: ', resultTree);
+	console.log('findBestOneLtrPath: ', resultTree.findBestOneLtrPath());
 	console.log('findBestTwoLtrPath: ', resultTree.findBestTwoLtrPath());
 	return resultTree.findBestTwoLtrPath();
 }
