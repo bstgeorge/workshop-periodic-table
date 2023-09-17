@@ -40,7 +40,6 @@ function check(inputWord) {
 			console.log('path: ', path);
 			this.word = word;
 			this.path = path;
-			console.log('this.path: ', this.path);
 			this.children = [null, null];
 			let oneLtrSymbol = null;
 			let twoLtrSymbol = null;
@@ -66,22 +65,34 @@ function check(inputWord) {
 			this.root = new TreeNode(word);
 		}
 
-		findFirstSolution(currentNode = this.root, inputWord = this.root.word) {
-			console.log('currentNode.children: ', currentNode.children)
-			for (let child in currentNode.children) {
-				console.log('child: ', child)
-				// base case
-				// solution found
-				if (child.path.join('') === inputWord) {
-					return child.path;
-				// no solution in current branch; try another branch
-				} else if (child === null) {
-					return;
-				// recurse
+		findBestTwoLtrPath(currentNode = this.root, inputWord = this.root.word) {
+			let traverseTree = (currentNode, inputWord) => {
+				console.log('currentNode.children: ', currentNode.children);
+				let result = [];
+					// base case occurs at terminal node
+				if (currentNode.children[0] === null && currentNode.children[1] === null) {
+					// check solution, return path
+					if (currentNode.path.join('').toLowerCase() === inputWord) {
+						console.log('Success - currentNode.path: ', currentNode.path.join('').toLowerCase());
+						return currentNode.path;
+					} else {
+						// if no solution, return empty array
+						return [];
+					}
+					// if non-terminal node, then iterate over tree
 				} else {
-					return findFirstSolution(child)
+					for (let child of currentNode.children) {
+						if (child !== null) {
+							result = traverseTree(child, inputWord);
+							if (result.join('').toLowerCase() === inputWord) {
+								break;
+							}
+						}
+					}
 				}
+				return result;
 			}
+			return traverseTree(currentNode, inputWord);
 		}
 
 		findSolution() {
@@ -142,8 +153,10 @@ function check(inputWord) {
 			}
 		}
 	}
+
 	console.log('inputWord: ', inputWord)
 	let resultTree = new Tree(inputWord);
 	console.log('resultTree: ', resultTree);
-	return [];
+	console.log('findBestTwoLtrPath: ', resultTree.findBestTwoLtrPath());
+	return resultTree.findBestTwoLtrPath();
 }
